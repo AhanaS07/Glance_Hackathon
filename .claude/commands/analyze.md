@@ -13,8 +13,8 @@ This command exercises the **live runtime path**: it sends a CSV to the backend'
 source of truth) and returns charts + insights. It therefore validates the whole pipeline
 (upload → pandas → Groq → chart_builder), not just Claude's own reasoning.
 
-> Endpoint note: per `CLAUDE.md`, the route is `/api/analyze` (not `/analyze`), and the multipart
-> field name is `file`.
+> Endpoint note: per `CLAUDE.md`, the route is `/api/analyze` and the multipart field name is
+> `file`. The response `summary` is an object — validate `summary.description`.
 
 ---
 

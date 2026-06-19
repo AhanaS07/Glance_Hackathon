@@ -20,16 +20,27 @@ export default function Dashboard({ data, onReset }) {
     )
   }
 
-  // Pull fields with sensible fallbacks so small backend naming differences
-  // don't break the UI.
-  const summary = data.summary ?? ''
-  const totalRows = data.total_rows ?? data.rows_count ?? data.rowCount
+  // The backend's `summary` is an object { rowCount, columnCount, description,
+  // columns }. Stay tolerant of a bare-string summary too, just in case.
+  const summaryObj =
+    data.summary && typeof data.summary === 'object' ? data.summary : null
+  const summaryText = summaryObj
+    ? summaryObj.description
+    : typeof data.summary === 'string'
+      ? data.summary
+      : ''
+  const totalRows =
+    summaryObj?.rowCount ?? data.total_rows ?? data.rows_count ?? data.rowCount
   const totalColumns =
-    data.total_columns ?? data.columns_count ?? data.columnCount
+    summaryObj?.columnCount ??
+    data.total_columns ??
+    data.columns_count ??
+    data.columnCount
   const charts = Array.isArray(data.charts) ? data.charts : []
   const insights = Array.isArray(data.insights) ? data.insights : []
 
-  // The raw tabular rows used to build every chart. Support a few common keys.
+  // Charts already carry their aggregated `data[]` from chart_builder.py.
+  // rawData is only a fallback for charts that arrive without it.
   const rawData = data.data ?? data.rows ?? data.raw_data ?? []
 
   return (
@@ -54,8 +65,8 @@ export default function Dashboard({ data, onReset }) {
           <Database className="w-5 h-5 text-blue-500" />
           <h2 className="text-lg font-semibold">Dataset Summary</h2>
         </div>
-        {summary && (
-          <p className="text-gray-400 leading-relaxed mb-5">{summary}</p>
+        {summaryText && (
+          <p className="text-gray-400 leading-relaxed mb-5">{summaryText}</p>
         )}
         <div className="grid grid-cols-2 gap-4 max-w-md">
           <Stat

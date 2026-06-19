@@ -12,7 +12,7 @@ in `inference-rules.md` (the **single source of truth**). When the two ever disa
 
 This skill covers two jobs:
 1. **Reasoning** — picking the chart `type` + `x`/`y` from column metadata (mirrors Groq's job).
-2. **Rendering** — switching Recharts components by `type` in `frontend/src/components/ChartRenderer.jsx`.
+2. **Rendering** — switching Recharts components by `type` in `frontend/src/components/ChartCard.jsx`.
 
 ---
 
@@ -83,12 +83,13 @@ These adjust a column's effective type and must be applied first:
 
 ---
 
-## Rendering — `ChartRenderer.jsx`
+## Rendering — `ChartCard.jsx`
 
-`ChartRenderer.jsx` switches on the chart's `type` field (`bar | line | pie | scatter`) and renders
+`ChartCard.jsx` switches on the chart's `type` field (`bar | line | pie | scatter`) and renders
 the matching Recharts components. Each chart's `data[]` array (filled by `chart_builder.py`) has
-keys equal to the chart's `x` and `y` column names — bind `dataKey` to those exact names. Wrap
-every chart in `<ResponsiveContainer>`.
+keys equal to the chart's `x` and `y` column names — bind `dataKey` to those exact names. The card
+consumes `chart.data` directly (it does **not** re-aggregate raw rows). Wrap every chart in
+`<ResponsiveContainer>`.
 
 | `type` | Recharts components |
 |---|---|

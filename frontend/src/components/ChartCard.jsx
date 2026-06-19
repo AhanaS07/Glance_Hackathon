@@ -38,30 +38,39 @@ const tooltipStyle = {
 }
 
 /**
- * Renders a single chart card based on a chart spec and the raw dataset.
+ * Renders a single chart card from a backend chart spec.
  *
- * @param {Object} chart - { type, title, x, y, insight }
- * @param {Array<Object>} rawData - array of row objects from the dataset
+ * @param {Object} chart - { type, title, x, y, insight, data } where `data` is
+ *   the pre-aggregated array built by chart_builder.py, with keys equal to the
+ *   `x` and `y` column names.
+ * @param {Array<Object>} [rawData] - optional fallback rows, only used if a
+ *   chart somehow arrives without its own `data`.
  */
 export default function ChartCard({ chart, rawData }) {
   const { type, title, x, y, insight } = chart || {}
 
-  // Build the chart data array by extracting the x/y fields from each row.
+  // Prefer the backend-built data[] (keys already equal x and y). Fall back to
+  // deriving it from rawData only if the spec arrives without data.
+  const source =
+    Array.isArray(chart?.data) && chart.data.length
+      ? chart.data
+      : Array.isArray(rawData)
+        ? rawData
+        : []
+
   // Coerce y to a number where possible so numeric charts render correctly.
-  const chartData = Array.isArray(rawData)
-    ? rawData
-        .map((row) => {
-          if (!row) return null
-          const xVal = row[x]
-          const yRaw = row[y]
-          const yNum = typeof yRaw === 'number' ? yRaw : parseFloat(yRaw)
-          return {
-            [x]: xVal,
-            [y]: Number.isNaN(yNum) ? yRaw : yNum,
-          }
-        })
-        .filter((d) => d && d[x] !== undefined && d[x] !== null)
-    : []
+  const chartData = source
+    .map((row) => {
+      if (!row) return null
+      const xVal = row[x]
+      const yRaw = row[y]
+      const yNum = typeof yRaw === 'number' ? yRaw : parseFloat(yRaw)
+      return {
+        [x]: xVal,
+        [y]: Number.isNaN(yNum) ? yRaw : yNum,
+      }
+    })
+    .filter((d) => d && d[x] !== undefined && d[x] !== null)
 
   return (
     <div className="bg-card rounded-2xl border border-gray-800 p-5 flex flex-col">

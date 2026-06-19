@@ -1,7 +1,7 @@
 // API client for the CSV Insights Dashboard.
-// Connects directly to the FastAPI backend running on localhost:8000.
-
-const API_BASE_URL = 'http://localhost:8000'
+// Uses a relative path so requests go through Vite's `/api` proxy to the
+// FastAPI backend (see vite.config.js). Never hardcode localhost:8000.
+const API_BASE_URL = ''
 
 /**
  * Upload a CSV file to the backend for analysis.
@@ -17,14 +17,14 @@ export async function analyzeCSV(file) {
 
   let response
   try {
-    response = await fetch(`${API_BASE_URL}/analyze`, {
+    response = await fetch(`${API_BASE_URL}/api/analyze`, {
       method: 'POST',
       body: formData,
     })
   } catch (networkError) {
     // fetch only rejects on network-level failures (server down, CORS, etc.)
     throw new Error(
-      'Could not reach the server. Make sure the backend is running on localhost:8000.',
+      'Could not reach the server. Start the backend: cd backend && uvicorn main:app --reload',
     )
   }
 
