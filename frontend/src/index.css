@@ -1,4 +1,19 @@
-/* TODO */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global dark theme defaults */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #0f0f0f;
+  color: #ffffff;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
