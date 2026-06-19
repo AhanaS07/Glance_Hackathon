@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+backend/.env
+
+# Node / frontend
+node_modules/
+frontend/dist/
+.vite/
+
+# Uploaded CSVs — ignore everything in data/ except bundled samples
+data/*.csv
+!data/sample_*.csv
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
