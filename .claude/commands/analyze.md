@@ -36,9 +36,9 @@ source of truth) and returns charts + insights. It therefore validates the whole
 - If `$ARGUMENTS` already contains a directory separator, use it verbatim.
 - Otherwise treat it as a filename under `sample_data/` (e.g. `sample_sales.csv` →
   `sample_data/sample_sales.csv`).
-- Read the file with the `filesystem` MCP server **only when the resolved path lives under that
-  server's `./data` root**; otherwise read it with the `Read` tool or `head`. (The actual upload to
-  the backend is done by curl below, so reading here is only to validate the file.)
+- Read the file with the `filesystem` MCP server — its roots are `./data` and `./sample_data`, so
+  both uploaded files and bundled samples are reachable. (The actual upload to the backend is done
+  by curl below, so reading here is only to validate the file.)
 
 ### 2. Confirm it is a valid CSV
 Verify all of the following; if any fails, print a clear one-line error and **stop**:

@@ -22,8 +22,9 @@ Two **independent** execution paths — do not conflate them:
 
 - **Runtime (serves users):** browser → multipart POST `/api/analyze` → FastAPI reads bytes with
   pandas → Groq (JSON mode) → backend builds chart data → JSON → Recharts. **No MCP here.**
-- **Dev-time (Claude Code only):** `.mcp.json` runs a filesystem MCP rooted at `./data`, letting
-  Claude Code read CSVs to test rules / debug. Never in the request path.
+- **Dev-time (Claude Code only):** `.mcp.json` runs a filesystem MCP rooted at `./data` and
+  `./sample_data`, letting Claude Code read CSVs (uploaded *and* bundled samples) to test rules /
+  debug. Never in the request path.
 
 Backend pipeline is layered into small single-purpose modules — keep them separate:
 `analyzer.py` (parse + per-column type inference) → `groq_client.py` (load rules, call Groq) →
@@ -51,7 +52,7 @@ Backend: `cd backend && pip install -r requirements.txt && uvicorn main:app --re
 Frontend: `cd frontend && npm install && npm run dev` (port 3000)
 Smoke test API: `curl -F "file=@data/sample_sales.csv" localhost:8000/api/analyze`
 Requires `GROQ_API_KEY` in `backend/.env` (copy `backend/.env.example`, add key).
-Claude Code MCP: `.mcp.json` (filesystem, rooted at `./data` — dev only, not in request path).
+Claude Code MCP: `.mcp.json` (filesystem, rooted at `./data` and `./sample_data` — dev only, not in request path).
 
 ## Conventions
 
